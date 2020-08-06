@@ -1,3 +1,5 @@
 import { combineReducers } from "redux";
-import counter from "./counter";
-export default combineReducers({ counter });
+import loginRouter from "./login";
+export default combineReducers({
+  userInfo: loginRouter,
+});

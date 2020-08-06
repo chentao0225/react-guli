@@ -1,2 +1,1 @@
-export const INCREMENT = "increment";
-export const DECREMENT = "decrement";
+export const SAVE_USER_INFO = "save_user_info";
