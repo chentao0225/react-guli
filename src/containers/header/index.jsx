@@ -3,6 +3,7 @@ import "./css/header.less";
 import { Button, Modal } from "antd";
 import { connect } from "react-redux";
 import { delUserInfo } from "../../redux/actions/login";
+import { saveTitle } from "../../redux/actions/header";
 class Header extends Component {
   logOut = () => {
     console.log("logout");
@@ -13,6 +14,7 @@ class Header extends Component {
       okText: "确定",
       onOk: () => {
         this.props.delUserInfo();
+        this.props.delTitle("");
       },
     });
   };
@@ -27,7 +29,7 @@ class Header extends Component {
         </div>
         <div className="header-bottom">
           <div className="title">
-            <h1>首页</h1>
+            <h1>{this.props.title}</h1>
           </div>
           <div className="date">2020年8月7日10:42:26</div>
         </div>
@@ -38,6 +40,7 @@ class Header extends Component {
 export default connect(
   (state) => ({
     username: state.userInfo.user.username,
+    title: state.header,
   }),
-  { delUserInfo }
+  { delUserInfo, delTitle: saveTitle }
 )(Header);

@@ -1,5 +1,7 @@
 import { combineReducers } from "redux";
-import loginRouter from "./login";
+import loginReducer from "./login";
+import headerReducer from "./header";
 export default combineReducers({
-  userInfo: loginRouter,
+  userInfo: loginReducer,
+  header: headerReducer,
 });

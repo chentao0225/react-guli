@@ -4,13 +4,42 @@ import { Menu } from "antd";
 import { Link, withRouter } from "react-router-dom";
 import logo from "../../static/imgs/react.svg";
 import "./css/left-nav.less";
+import { connect } from "react-redux";
+import { saveTitle } from "../../redux/actions/header";
 class LeftNav extends Component {
+  componentDidMount() {
+    if (!this.props.title) {
+      this.getTitleByPath();
+    }
+  }
+  getTitleByPath = () => {
+    const pathArr = this.props.location.pathname.split("/");
+    let currentPath = pathArr.reverse()[0];
+    console.log(currentPath);
+    if (currentPath === "admin") currentPath = "home";
+    let title = "";
+    menuConfig.forEach((item) => {
+      if (item.children instanceof Array) {
+        let res = item.children.find((cItem) => cItem.key === currentPath);
+        if (res) title = res.title;
+      } else {
+        if (item.key === currentPath) title = item.title;
+      }
+    });
+    this.props.saveTitle(title);
+  };
   createMenu = (menuArr) => {
     // console.log(menuArr);
     return menuArr.map((item) => {
       if (!item.children) {
         return (
-          <Menu.Item key={item.key} icon={<item.icon />}>
+          <Menu.Item
+            onClick={() => {
+              this.props.saveTitle(item.title);
+            }}
+            key={item.key}
+            icon={<item.icon />}
+          >
             <Link to={item.path}>{item.title}</Link>
           </Menu.Item>
         );
@@ -49,4 +78,6 @@ class LeftNav extends Component {
     );
   }
 }
-export default withRouter(LeftNav);
+export default connect((state) => ({ title: state.header }), { saveTitle })(
+  withRouter(LeftNav)
+);
