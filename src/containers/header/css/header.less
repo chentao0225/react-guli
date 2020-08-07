@@ -1,0 +1,44 @@
+.header {
+  background-color: white;
+  .header-top {
+    height: 40px;
+    width: 100%;
+    padding-right: 20px;
+    text-align: right;
+    line-height: 40px;
+    border-bottom: 2px solid #aed7ae;
+  }
+  .header-bottom {
+    position: relative;
+    height: 40px;
+    line-height: 40px;
+    display: flex;
+    .title {
+      width: 25%;
+      height: 40px;
+      text-align: center;
+      position: relative;
+      h1 {
+        margin: 0;
+        font-size: 20px;
+      }
+      &::after {
+        position: absolute;
+        left: 50%;
+        top: 40px;
+        transform: translate(-50%);
+        content: "";
+        display: block;
+        border-top: 20px solid white;
+        border-right: 20px solid transparent;
+        border-bottom: 20px solid transparent;
+        border-left: 20px solid transparent;
+      }
+    }
+    .date {
+      width: 75%;
+      padding-right: 20px;
+      text-align: right;
+    }
+  }
+}

@@ -9,7 +9,7 @@ import { saveUserInfo } from "../../redux/actions/login";
 import { Redirect } from "react-router-dom";
 class Login extends Component {
   onFinish = async (values) => {
-    console.log("Received values of form: ", values);
+    // console.log("Received values of form: ", values);
     const { username, password } = values;
     let res = await reqLogin(username, password);
     // console.log(res);
@@ -33,6 +33,7 @@ class Login extends Component {
     return Promise.resolve();
   };
   render() {
+    // console.log(this.props.isLogin);
     if (this.props.isLogin) return <Redirect to="/admin" />;
     return (
       <div id="login">
