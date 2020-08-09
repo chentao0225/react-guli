@@ -18,7 +18,7 @@ class Login extends Component {
       message.success("登录成功", 1);
       this.props.saveUserInfo(data);
     } else {
-      message.warning(msg, 1);
+      message.error(msg, 1);
     }
   };
   pwdValidator = (rule, value) => {

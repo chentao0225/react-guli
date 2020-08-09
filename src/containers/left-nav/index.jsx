@@ -15,7 +15,7 @@ class LeftNav extends Component {
   getTitleByPath = () => {
     const pathArr = this.props.location.pathname.split("/");
     let currentPath = pathArr.reverse()[0];
-    console.log(currentPath);
+    // console.log(currentPath);
     if (currentPath === "admin") currentPath = "home";
     let title = "";
     menuConfig.forEach((item) => {
@@ -53,10 +53,11 @@ class LeftNav extends Component {
     });
   };
   render() {
-    console.log(this.props.location);
+    // console.log(this.props.location);
     const currentPathArr = this.props.location.pathname.split("/");
-    console.log(currentPathArr);
+    // console.log(currentPathArr);
     let currentPath = currentPathArr.reverse()[0];
+    // console.log(currentPath);
     if (currentPath === "admin") currentPath = "home";
     return (
       <div className="left-nav">
