@@ -13,6 +13,7 @@ import Role from "../role";
 import Bar from "../bar";
 import Pie from "../pie";
 import Line from "../line";
+import AddUpdate from "../product/addUpdate";
 const { Sider, Content, Footer } = Layout;
 class Admin extends Component {
   render() {
@@ -28,7 +29,19 @@ class Admin extends Component {
             <Switch>
               <Route path="/admin/home" component={Home} />
               <Route path="/admin/prod_about/category" component={Category} />
-              <Route path="/admin/prod_about/product" component={Product} />
+              <Route
+                path="/admin/prod_about/product"
+                exact
+                component={Product}
+              />
+              <Route
+                path="/admin/prod_about/product/add"
+                component={AddUpdate}
+              />
+              <Route
+                path="/admin/prod_about/product/update/:id"
+                component={AddUpdate}
+              />
               <Route path="/admin/user" component={User} />
               <Route path="/admin/role" component={Role} />
               <Route path="/admin/charts/bar" component={Bar} />
