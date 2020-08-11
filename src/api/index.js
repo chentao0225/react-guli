@@ -1,8 +1,8 @@
 /** 请求地址*/
 import ajax from "./ajax";
-
+import store from "../redux/store";
 //请求登录
-
+const { username } = store.getState().userInfo.user;
 export const reqLogin = (username, password) =>
   ajax.post("/login", { username, password });
 
@@ -48,3 +48,19 @@ export const reqPorductById = (productId) =>
 //更新商品
 export const reqUpdateProduct = (productObj) =>
   ajax.post("/manage/product/update", productObj);
+
+//角色列表
+export const reqRoleList = () => ajax.get("manage/role/list");
+
+//添加角色
+export const reqAddRole = (roleName) =>
+  ajax.post("/manage/role/add", { roleName });
+
+//更新角色
+export const reqUpdateRole = (_id, menus) =>
+  ajax.post("/manage/role/update", {
+    _id,
+    menus,
+    auth_name: username,
+    auth_time: Date.now(),
+  });
