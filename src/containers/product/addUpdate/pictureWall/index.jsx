@@ -1,6 +1,7 @@
 import React from "react";
 import { Upload, Modal, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { reqDelImg } from "../../../../api";
 const IMG_BASE_URL = "http://localhost:4000/upload/";
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -25,6 +26,26 @@ export default class PicturesWall extends React.Component {
       //   }
     ],
   };
+  setFileListByImgName = (nameArr) => {
+    let fileList = [];
+    nameArr.forEach((name, index) => {
+      fileList.push({
+        uid: index,
+        name,
+        status: "done",
+        url: IMG_BASE_URL + name,
+      });
+    });
+    this.setState({ fileList });
+  };
+  //获取上传图片数组
+  getImgNameArr = () => {
+    let arr = [];
+    this.state.fileList.forEach((item, index) => {
+      arr.push(item.name);
+    });
+    return arr;
+  };
 
   handleCancel = () => this.setState({ previewVisible: false });
 
@@ -41,21 +62,25 @@ export default class PicturesWall extends React.Component {
     });
   };
 
-  handleChange = ({ file, fileList }) => {
-    console.log(file, fileList);
+  handleChange = async (info) => {
+    const { file, fileList } = info;
+    // console.log(file, fileList);
     if (file.status === "done") {
       const { status, data } = file.response;
       if (status === 0) {
-        message.succuss("图片上传成功");
+        message.success("图片上传成功");
         const { name, url } = data;
-        console.log(data);
+        // console.log(data);
         fileList[fileList.length - 1].name = name;
         fileList[fileList.length - 1].url = url;
-      } else if (file.status === "removed") {
-        console.log("删除图片");
       }
-      this.setState({ fileList });
+    } else if (file.status === "removed") {
+      let res = await reqDelImg(file.name);
+      const { status } = res;
+      if (status === 0) message.success("删除图片成功");
+      else message.error("删除图片失败");
     }
+    this.setState({ fileList });
   };
 
   render() {

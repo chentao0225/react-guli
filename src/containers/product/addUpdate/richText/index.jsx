@@ -9,13 +9,13 @@ export default class richtext extends Component {
     editorState: EditorState.createEmpty(), //初始化一个编辑器状态
   };
   //根据富文本还原成文本,以及编辑器状态
-  setRichtext = (html) => {
+  setRichText = (html) => {
     const cBlock = htmltodraft(html);
     if (cBlock) {
       const cState = ContentState.createFromBlockArray(cBlock.contentBlocks);
       const editorState = EditorState.createWithContent(cState);
       this.setState({
-        EditorState,
+        editorState,
       });
     }
   };

@@ -15,9 +15,10 @@ export default class Product extends Component {
     pageSize: 5,
     searchType: "productName",
     keyWord: "",
+    isLoading: false,
   };
   changeStatus = async (id, currentStatus) => {
-    console.log(currentStatus);
+    // console.log(currentStatus);
     if (currentStatus === 1) currentStatus = 0;
     else currentStatus = 1;
     let res = await reqUpdateProductStatus(id, currentStatus);
@@ -30,6 +31,7 @@ export default class Product extends Component {
     }
   };
   getProductList = async (pageNum = 1) => {
+    this.setState({ isLoading: true });
     let res;
     if (this.isSearch) {
       const { searchType, keyWord } = this.state;
@@ -48,6 +50,7 @@ export default class Product extends Component {
         productList: data.list,
         pageNum: data.pageNum,
         total: data.total,
+        isLoading: false,
       });
     } else {
       message.error(msg, 1);
@@ -83,7 +86,7 @@ export default class Product extends Component {
         dataIndex: "status",
         key: "status",
         render: (currentStatus, productObj) => {
-          console.log(currentStatus);
+          // console.log(currentStatus);
           const { _id } = productObj;
           return (
             <div>
@@ -110,7 +113,16 @@ export default class Product extends Component {
         render: (id) => {
           return (
             <div>
-              <Button type="link">详情</Button>
+              <Button
+                onClick={() => {
+                  this.props.history.push(
+                    `/admin/prod_about/product/detail/${id}`
+                  );
+                }}
+                type="link"
+              >
+                详情
+              </Button>
               <br />
               <Button
                 type="link"
@@ -130,6 +142,7 @@ export default class Product extends Component {
     return (
       <div>
         <Card
+          loading={this.state.isLoading}
           title={
             <div>
               <Select

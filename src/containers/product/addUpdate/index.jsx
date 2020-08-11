@@ -1,11 +1,65 @@
 import React, { Component } from "react";
-import { Card, Form, Select, Input, Button } from "antd";
+import { Card, Form, Select, Input, Button, message } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import PictureWall from "./pictureWall";
 import RichText from "./richText";
+import { connect } from "react-redux";
+import { saveCategoryListAsync } from "../../../redux/actions/category";
+import { reqAddProduct, reqPorductById, reqUpdateProduct } from "../../../api";
 const { Item } = Form;
 const { Option } = Select;
-export default class AddUpdate extends Component {
+class AddUpdate extends Component {
+  constructor(props) {
+    super(props);
+    this.picRef = React.createRef();
+    this.textRef = React.createRef();
+    this.formRef = React.createRef();
+    this.state = {
+      isUpdate: false,
+      isLoading: false,
+    };
+  }
+  componentDidMount() {
+    const { categoryList, saveCategoryListAsync } = this.props;
+    if (categoryList.length === 0) saveCategoryListAsync();
+    const id = this.props.match.params.id;
+    if (id) {
+      this._id = id;
+      this.setState({ isUpdate: true });
+      this.currentProductInfo(id);
+    }
+  }
+  currentProductInfo = async (id) => {
+    // console.log(id);
+    let res = await reqPorductById(id);
+    // console.log(this.formRef);
+    const { status, msg, data } = res;
+    if (status === 0) {
+      const { categoryId, name, desc, price, detail, imgs } = data;
+      this.formRef.current.setFieldsValue({ name, desc, price, categoryId }); //显示当前商品内容
+      this.picRef.current.setFileListByImgName(imgs); //显示当前商品图片
+      this.textRef.current.setRichText(detail); //显示当前富文本内容
+    } else message.error(msg);
+  };
+  onFinish = async (values) => {
+    console.log("submit", values);
+    values.imgs = this.picRef.current.getImgNameArr();
+    values.detail = this.textRef.current.getRichText();
+    let res;
+    if (this.state.isUpdate) {
+      //更新商品
+      values._id = this._id;
+      res = await reqUpdateProduct(values);
+    } else {
+      //添加商品
+      res = await reqAddProduct(values);
+    }
+    const { status, msg } = res;
+    if (status === 0) {
+      message.success(this.state.isUpdate ? "修改成功" : "添加成功");
+      this.props.history.push("/admin/prod_about/product");
+    } else message.error(msg);
+  };
   render() {
     // console.log(this.props);
     const { id } = this.props.match.params;
@@ -24,7 +78,7 @@ export default class AddUpdate extends Component {
             </div>
           }
         >
-          <Form>
+          <Form ref={this.formRef} onFinish={this.onFinish}>
             <Item
               name="name"
               label="商品名称"
@@ -65,15 +119,21 @@ export default class AddUpdate extends Component {
               ]}
               wrapperCol={{ span: 6 }}
             >
-              <Select>
-                <Option value="请选择分类"></Option>
+              <Select placeholder="请选择分类">
+                {this.props.categoryList.map((item, index) => {
+                  return (
+                    <Option value={item._id} key={index}>
+                      {item.name}
+                    </Option>
+                  );
+                })}
               </Select>
             </Item>
             <Item name="imgs" label="商品图片" wrapperCol={{ span: 6 }}>
-              <PictureWall />
+              <PictureWall ref={this.picRef} />
             </Item>
             <Item label="商品详情" wrapperCol={{ span: 12 }}>
-              <RichText />
+              <RichText ref={this.textRef} />
             </Item>
             <Item>
               <Button type="primary" htmlType="submit">
@@ -86,3 +146,6 @@ export default class AddUpdate extends Component {
     );
   }
 }
+export default connect((state) => ({ categoryList: state.categoryList }), {
+  saveCategoryListAsync,
+})(AddUpdate);

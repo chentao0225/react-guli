@@ -14,6 +14,7 @@ import Bar from "../bar";
 import Pie from "../pie";
 import Line from "../line";
 import AddUpdate from "../product/addUpdate";
+import Detail from "../product/detail";
 const { Sider, Content, Footer } = Layout;
 class Admin extends Component {
   render() {
@@ -41,6 +42,10 @@ class Admin extends Component {
               <Route
                 path="/admin/prod_about/product/update/:id"
                 component={AddUpdate}
+              />
+              <Route
+                path="/admin/prod_about/product/detail/:id"
+                component={Detail}
               />
               <Route path="/admin/user" component={User} />
               <Route path="/admin/role" component={Role} />

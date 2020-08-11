@@ -31,3 +31,20 @@ export const reqSearchProduct = (pageNum, pageSize, searchType, keyWord) =>
 //商品上下架处理
 export const reqUpdateProductStatus = (productId, status) =>
   ajax.post("/manage/product/updateStatus", { productId, status });
+
+//添加商品
+export const reqAddProduct = (productObj) =>
+  ajax.post("/manage/product/add", productObj);
+
+//删除图片
+
+export const reqDelImg = (name) => ajax.post("/manage/img/delete", { name });
+
+//根据商品id获取商品信息
+
+export const reqPorductById = (productId) =>
+  ajax.get("/manage/product/info", { params: { productId } });
+
+//更新商品
+export const reqUpdateProduct = (productObj) =>
+  ajax.post("/manage/product/update", productObj);
