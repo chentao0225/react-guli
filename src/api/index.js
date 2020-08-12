@@ -64,3 +64,18 @@ export const reqUpdateRole = (_id, menus) =>
     auth_name: username,
     auth_time: Date.now(),
   });
+
+//用户列表
+export const reqUserList = () => ajax.get("/manage/user/list");
+
+//删除用户
+
+export const reqDelUser = (userId) =>
+  ajax.post("/manage/user/delete", { userId });
+
+//添加用户
+export const reqAddUser = (userObj) => ajax.post("/manage/user/add", userObj);
+
+//更新用户
+export const reqUpdateUser = (userObj) =>
+  ajax.post("/manage/user/update", userObj);
