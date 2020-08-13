@@ -15,10 +15,11 @@ import Pie from "../pie";
 import Line from "../line";
 import AddUpdate from "../product/addUpdate";
 import Detail from "../product/detail";
+import check from "../check";
 const { Sider, Content, Footer } = Layout;
 class Admin extends Component {
   render() {
-    if (!this.props.isLogin) return <Redirect to="/login" />;
+    // if (!this.props.isLogin) return <Redirect to="/login" />;
     return (
       <Layout className="admin-root">
         <Sider>
@@ -63,4 +64,6 @@ class Admin extends Component {
     );
   }
 }
-export default connect((state) => ({ isLogin: state.userInfo.isLogin }))(Admin);
+export default connect((state) => ({ isLogin: state.userInfo.isLogin }))(
+  check(Admin)
+);

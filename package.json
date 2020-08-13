@@ -14,6 +14,8 @@
     "dayjs": "^1.8.33",
     "draft-js": "^0.11.6",
     "draftjs-to-html": "^0.9.1",
+    "echarts": "^4.8.0",
+    "echarts-for-react": "^2.0.16",
     "html-to-draftjs": "^1.5.0",
     "http-proxy-middleware": "^1.0.5",
     "react": "^16.13.1",

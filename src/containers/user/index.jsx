@@ -17,102 +17,7 @@ export default class User extends Component {
       isUpdate: false,
     };
     this.formRef = React.createRef();
-  }
-  getUserList = async () => {
-    let res = await reqUserList();
-    const { status, data, msg } = res;
-    if (status === 0) {
-      this.setState({ userList: data.users, roleList: data.roles });
-    } else message.error(msg, 1);
-  };
-  getRole = (id) => {
-    let res = this.state.roleList.find((item) => item._id === id);
-    // console.log(res);
-    if (res) return res.name;
-  };
-
-  showDelModal = (id, obj) => {
-    // console.log(id, obj);
-    Modal.confirm({
-      title: `确定删除${obj.username}吗?`,
-      icon: <ExclamationCircleOutlined />,
-      onOk: async () => {
-        let res = await reqDelUser(id);
-        const { status, msg } = res;
-        if (status === 0) {
-          message.success("删除成功");
-          this.getUserList();
-        } else message.error(msg);
-      },
-    });
-  };
-  handleOk = async () => {
-    // console.log(this.formRef.current.getFieldsValue());
-
-    const {
-      username,
-      password,
-      phone,
-      email,
-      role_id,
-    } = this.formRef.current.getFieldsValue();
-
-    let res;
-    if (this.state.isUpdate) {
-      const {
-        username,
-        phone,
-        email,
-        role_id,
-      } = this.formRef.current.getFieldsValue();
-      res = await reqUpdateUser({
-        _id: this._id,
-        username,
-        phone,
-        email,
-        role_id,
-      });
-    } else {
-      res = await reqAddUser({ username, password, phone, email, role_id });
-    }
-
-    const { status, msg } = res;
-    if (status === 0) {
-      message.success(this.state.isUpdate ? "修改成功" : "添加成功");
-      this.setState({
-        visible: false,
-        isUpdate: false,
-      });
-      this.getUserList();
-      this.formRef.current.resetFields();
-    } else message.error(msg, 1);
-  };
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-      isUpdate: false,
-      userInfo: {},
-    });
-    this.formRef.current.setFieldsValue({ username: "" });
-  };
-  showAddModal = () => {
-    this.setState({ visible: true });
-  };
-  showUpdateModal = (id, obj) => {
-    this.user = obj;
-    this._id = id;
-
-    this.setState({ isUpdate: true, visible: true });
-  };
-
-  componentDidMount() {
-    this.getUserList();
-  }
-  render() {
-    // console.log(this.user);
-    const user = this.user;
-    const dataSource = this.state.userList;
-    const columns = [
+    this.columns = [
       {
         title: "用户名",
         dataIndex: "username",
@@ -155,32 +60,141 @@ export default class User extends Component {
         ),
       },
     ];
+  }
+  getUserList = async () => {
+    let res = await reqUserList();
+    const { status, data, msg } = res;
+    if (status === 0) {
+      this.setState({ userList: data.users, roleList: data.roles });
+    } else message.error(msg, 1);
+  };
+  getRole = (id) => {
+    let res = this.state.roleList.find((item) => item._id === id);
+    if (res) return res.name;
+  };
+
+  showDelModal = (id, obj) => {
+    // console.log(id, obj);
+    Modal.confirm({
+      title: `确定删除${obj.username}吗?`,
+      icon: <ExclamationCircleOutlined />,
+      onOk: async () => {
+        let res = await reqDelUser(id);
+        const { status, msg } = res;
+        if (status === 0) {
+          message.success("删除成功");
+          this.getUserList();
+        } else message.error(msg);
+      },
+    });
+  };
+  handleOk = async () => {
+    const {
+      username,
+      password,
+      phone,
+      email,
+      role_id,
+    } = this.formRef.current.getFieldsValue();
+
+    let res;
+    if (this.state.isUpdate) {
+      const {
+        username,
+        phone,
+        email,
+        role_id,
+      } = this.formRef.current.getFieldsValue();
+      res = await reqUpdateUser({
+        _id: this._id,
+        username,
+        phone,
+        email,
+        role_id,
+      });
+    } else {
+      res = await reqAddUser({ username, password, phone, email, role_id });
+    }
+
+    const { status, msg } = res;
+    if (status === 0) {
+      message.success(this.state.isUpdate ? "修改成功" : "添加成功");
+      this.setState({
+        visible: false,
+        isUpdate: false,
+      });
+      this.getUserList();
+      this.user = null;
+    } else message.error(msg, 1);
+  };
+  onFinish = () => {
+    this.formRef.current.validateFields().then(
+      () => this.handleOk(),
+      () => new Promise(() => {})
+    );
+  };
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+      isUpdate: false,
+    });
+    this.user = null;
+  };
+  showAddModal = () => {
+    // if (this.formRef.current) this.formRef.current.resetFields();
+    this.setState({ visible: true });
+  };
+  showUpdateModal = (id, obj) => {
+    this.user = obj;
+    this._id = id;
+    // if (this.formRef.current)
+    //   this.formRef.current.setFieldsValue({ ...this.user });
+
+    this.setState({ isUpdate: true, visible: true });
+  };
+
+  componentDidMount() {
+    this.getUserList();
+  }
+  render() {
+    // console.log(this.user);
+    const user = this.user;
+    const dataSource = this.state.userList;
     return (
-      <Card
-        title={
-          <Button type="primary" onClick={() => this.showAddModal()}>
-            创建用户
-          </Button>
-        }
-      >
-        <Table dataSource={dataSource} columns={columns} rowKey="_id" />
+      <>
+        <Card
+          title={
+            <Button type="primary" onClick={() => this.showAddModal()}>
+              创建用户
+            </Button>
+          }
+        >
+          <Table
+            bordered
+            dataSource={dataSource}
+            columns={this.columns}
+            rowKey="_id"
+          />
+        </Card>
         <Modal
           title={this.state.isUpdate ? "修改用户" : "添加用户"}
           visible={this.state.visible}
-          onOk={this.handleOk}
           onCancel={this.handleCancel}
+          onOk={this.onFinish}
           okText="确定"
           cancelText="取消"
+          destroyOnClose={true}
         >
           <Form
             ref={this.formRef}
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 16 }}
+            initialValues={user ? user : {}}
+            preserve={false}
           >
             <Item
               name="username"
               label="用户名"
-              initialValue={user ? user.username : ""}
               rules={[{ required: true, message: "用户名不能为空" }]}
             >
               <Input placeholder="请输入用户名" />
@@ -214,7 +228,7 @@ export default class User extends Component {
             </Item>
           </Form>
         </Modal>
-      </Card>
+      </>
     );
   }
 }

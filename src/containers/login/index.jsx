@@ -6,7 +6,8 @@ import "./css/login.less";
 import { reqLogin } from "../../api";
 import { connect } from "react-redux";
 import { saveUserInfo } from "../../redux/actions/login";
-import { Redirect } from "react-router-dom";
+// import { Redirect } from "react-router-dom";
+import check from "../check";
 class Login extends Component {
   onFinish = async (values) => {
     // console.log("Received values of form: ", values);
@@ -34,7 +35,7 @@ class Login extends Component {
   };
   render() {
     // console.log(this.props.isLogin);
-    if (this.props.isLogin) return <Redirect to="/admin" />;
+    // if (this.props.isLogin) return <Redirect to="/admin" />;
     return (
       <div id="login">
         <div className="login-header">
@@ -110,4 +111,4 @@ class Login extends Component {
 }
 export default connect((state) => ({ isLogin: state.userInfo.isLogin }), {
   saveUserInfo,
-})(Login);
+})(check(Login));

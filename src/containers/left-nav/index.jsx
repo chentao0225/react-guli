@@ -31,26 +31,44 @@ class LeftNav extends Component {
   createMenu = (menuArr) => {
     // console.log(menuArr);
     return menuArr.map((item) => {
-      if (!item.children) {
-        return (
-          <Menu.Item
-            onClick={() => {
-              this.props.saveTitle(item.title);
-            }}
-            key={item.key}
-            icon={<item.icon />}
-          >
-            <Link to={item.path}>{item.title}</Link>
-          </Menu.Item>
-        );
-      } else {
-        return (
-          <Menu.SubMenu key={item.key} title={item.title} icon={<item.icon />}>
-            {this.createMenu(item.children)}
-          </Menu.SubMenu>
-        );
+      if (this.handleAuth(item)) {
+        if (!item.children) {
+          return (
+            <Menu.Item
+              onClick={() => {
+                this.props.saveTitle(item.title);
+              }}
+              key={item.key}
+              icon={<item.icon />}
+            >
+              <Link to={item.path}>{item.title}</Link>
+            </Menu.Item>
+          );
+        } else {
+          return (
+            <Menu.SubMenu
+              key={item.key}
+              title={item.title}
+              icon={<item.icon />}
+            >
+              {this.createMenu(item.children)}
+            </Menu.SubMenu>
+          );
+        }
       }
+      return "";
     });
+  };
+  handleAuth = (menuObj) => {
+    const { username, userMenus } = this.props;
+    if (username === "admin" || userMenus.indexOf(menuObj.key) !== -1) {
+      return true;
+    } else if (menuObj.children) {
+      return menuObj.children.some(
+        (item) => userMenus.indexOf(item.key) !== -1
+      );
+    }
+    return false;
   };
   render() {
     // console.log(this.props.location);
@@ -79,6 +97,10 @@ class LeftNav extends Component {
     );
   }
 }
-export default connect((state) => ({ title: state.header }), { saveTitle })(
-  withRouter(LeftNav)
-);
+export default connect(
+  (state) => ({
+    username: state.userInfo.user.username,
+    userMenus: state.userInfo.user.role.menus,
+  }),
+  { saveTitle }
+)(withRouter(LeftNav));

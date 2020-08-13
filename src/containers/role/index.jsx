@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Card, Button, Table, message, Modal, Form, Input, Tree } from "antd";
 import dayjs from "dayjs";
 import { reqRoleList, reqAddRole, reqUpdateRole } from "../../api";
-import treeArr from "../../config/menu_config";
+import treeArr from "../../config/tree_config";
 const { Item } = Form;
 export default class Role extends Component {
   constructor(props) {
@@ -72,6 +72,12 @@ export default class Role extends Component {
   handleCheck = (checkedKeys) => {
     this.setState({ checkedKeys });
   };
+  onFinish = () => {
+    this.formRef.current.validateFields().then(
+      () => this.handleAddOk(),
+      () => new Promise(() => {})
+    );
+  };
   componentDidMount() {
     this.getRoleList();
   }
@@ -138,7 +144,7 @@ export default class Role extends Component {
         <Modal
           title="添加角色"
           visible={this.state.visibleAdd}
-          onOk={this.handleAddOk}
+          onOk={this.onFinish}
           onCancel={this.handleAddCancel}
           okText="确定"
           cancelText="取消"
